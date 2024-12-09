@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+    
+
+
+</head>
+
+<body>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100vh;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+           
+            <img src="{% static 'img/icon.png' %}" alt="icon" class="logo" />
+            <span class="fs-4">Al-Shahd WareHouse</span>
+        </a>
+        <hr>
+
+        <div id="">
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li >
+                <a href="/login" class="nav-link active  text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    Inventory
+                </a>
+            </li>
+
+            <li>
+                <a href="/customers" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid"></use>
+                    </svg>
+                    Products
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Employees
+                </a>
+            </li>
+        </ul>
+    </div>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                <strong>mdo</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="#">Add Customer</a></li>
+                <li><a class="dropdown-item" href="#">Add Product</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main_view">
+
+        <h1>Al-Shahd Company - Dashboard</h1>
+        <nav class="navbar navbar-light bg-light">
+            <form class="form-inline" id="search">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+       
+
+            </form>
+          </nav>
+
+    <table class="table table-striped" id="data_table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Icon</th>
+            <th scope="col">Item</th>
+            <th scope="col">SN</th>
+            <th scope="col">Description</th>
+            <th scope="col">Available</th>
+            <th scope="col">Sold Date</th>
+            <th scope="col">Sold To</th>
+            <th scope="col">Sold By</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td><img src="{% static 'img/ram.png' %}" alt="icon" class="icon" /></td>
+            <td>Mark</td>
+            <td>123456789</td>
+            <td>1024G</td>
+            <td>Yes</td>
+            <td>2024-03-13</td>
+            <td>Saaeed</td>
+            <td>Admin</td>
+            <td>
+            <div class="actions">
+
+                <a href="shows/{{ show.id }}">View</a>
+                <a href="shows/{{ show.id }}/edit">Edit</a>
+                <a href="shows/{{ show.id }}/edit">Sell</a>
+                <form action="deleteshow" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="show_id" value="{{ show.id }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </td>
+
+          </tr>
+          
+          
+        </tbody>
+      </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

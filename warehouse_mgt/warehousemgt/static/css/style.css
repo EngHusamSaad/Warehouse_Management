@@ -1,0 +1,47 @@
+
+
+
+.logo{
+    width: 100px;
+    height: 100px;
+}
+
+
+
+body{
+    display: flex;
+}
+
+#search{
+    display: flex;
+}
+
+#data_table{
+    border: 2px solid black;
+    width: 150vh ;
+}
+
+.main_view{
+    margin: 10px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.icon{
+    width: 50px;
+    height: 50px;
+}
+
+
+.gold_BK_color {
+    background-color: #f0f8ff !important;
+}
+
+.nav-link.active {
+    background-color: #6c757d; /* لون مختلف للقسم النشط */
+    font-weight: bold;
+}
