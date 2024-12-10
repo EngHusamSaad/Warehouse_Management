@@ -13,7 +13,8 @@ def index(request):
 
 
 def login(request):
-    return render(request,"main.html")
+    data = {"all_items": Item.objects.all()}
+    return render(request,"main.html",data)
 
 
 def customers(request):

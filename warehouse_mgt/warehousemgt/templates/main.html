@@ -45,7 +45,7 @@
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#grid"></use>
                         </svg>
-                        Products
+                        Customers
                     </a>
                 </li>
                 <li>
@@ -91,6 +91,7 @@
 
         </nav>
 
+
         <table class="table table-striped" id="data_table">
             <thead>
                 <tr>
@@ -107,32 +108,37 @@
                 </tr>
             </thead>
             <tbody>
+                {% for item in all_items %}
                 <tr>
-                    <th scope="row">1</th>
-                    <td><img src="{% static 'img/ram.png' %}" alt="icon" class="icon" /></td>
-                    <td>Mark</td>
-                    <td>123456789</td>
-                    <td>1024G</td>
-                    <td>Yes</td>
-                    <td>2024-03-13</td>
-                    <td>Saaeed</td>
+                    <th scope="row">{{ item.id }}</th>
+                    <td><a href="http://127.0.0.1:8000/{{ item.icon.file.url }}" target="_blank">
+                        <img src="http://127.0.0.1:8000/{{ item.icon.file.url }}" alt="icon" class="icon" />
+                    </a></td>
+                    <td>{{ item.name_item }}</td>
+                    <td>{{ item.sn }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.isAvailble }}</td>
+                    <td>{{ item.sold_date }}</td>
+                    <td>{{ item.sold_by }}</td>
                     <td>Admin</td>
                     <td>
                         <div class="actions">
 
-                            <a href="shows/{{ show.id }}">View</a>
-                            <a href="shows/{{ show.id }}/edit">Edit</a>
-                            <a href="shows/{{ show.id }}/edit">Sell</a>
-                            <form action="deleteshow" method="post">
+                            <a href="item/{{ item.id }}">View</a>
+                            <a href="item/{{ item.id }}/edit">Edit</a>
+                            <a href="item/{{ item.id }}/edit">Sell</a>
+                            <form action="deleteitem" method="post">
                                 {% csrf_token %}
 
-                                <input type="hidden" name="show_id" value="{{ show.id }}">
+                                <input type="hidden" name="show_id" value="{{ item.id }}">
                                 <button type="submit">Delete</button>
                             </form>
                         </div>
                     </td>
 
                 </tr>
+
+                {% endfor %}
 
 
             </tbody>
