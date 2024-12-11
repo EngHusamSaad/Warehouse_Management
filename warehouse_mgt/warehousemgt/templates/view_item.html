@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        {% load static %}
+    <title>Add New Show</title>
+</head>
+
+<body>
+
+    <div>
+
+    <h1>Add a New Item</h1>
+    
+
+    <form action="/add_item" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="Item_name">Item name</label>
+        <input type="text" name="Item_name" placeholder="Item_name" id="Item_name"><br><br />
+
+        <label for="Item_SN">Item SN</label>
+        <input type="text" name="Item_SN" placeholder="Item_SN" id="Item_SN"><br /><br />
+
+        <label for="description">Description: </label>
+        <textarea id="Description" name="description" rows="4" cols="30"></textarea><br /><br />
+
+        <label for="file">Browse Icon</label>
+        <input type="file" name="file" id="file"><br /><br />
+
+        <button type="submit" class="btn btn-info">Add New Item</button>
+
+
+    </form>
+</div>
+
+    <img src="{% static 'img/add_icon.png' %}" alt="icon" class="logo" />
+
+    
+
+
+    
+
+
+</body>
+
+<style>
+    #back {
+        width: 50%;
+    }
+
+    #Item_SN {
+        margin: 10px 25px;
+
+
+    }
+
+    #Item_name {
+        margin: 10px;
+    }
+
+    label {
+        margin-right: 20px;
+        font-weight: 50px;
+
+    }
+
+    h1 {
+        margin: 30px;
+    }
+
+    body {
+        margin: 100px ;
+        display: flex;
+        justify-content: space-around;
+    }
+</style>
+
+</html>

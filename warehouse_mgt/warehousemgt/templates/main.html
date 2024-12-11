@@ -8,6 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="{% static 'js/script.js' %}"></script>
@@ -112,19 +115,46 @@
                 <tr>
                     <th scope="row">{{ item.id }}</th>
                     <td><a href="http://127.0.0.1:8000/{{ item.icon.file.url }}" target="_blank">
-                        <img src="http://127.0.0.1:8000/{{ item.icon.file.url }}" alt="icon" class="icon" />
-                    </a></td>
+                            <img src="http://127.0.0.1:8000/{{ item.icon.file.url }}" alt="icon" class="icon" />
+                        </a></td>
                     <td>{{ item.name_item }}</td>
                     <td>{{ item.sn }}</td>
                     <td>{{ item.description }}</td>
-                    <td>{{ item.isAvailble }}</td>
+                    {% if item.isAvailble %}
+                    <td><span class="badge badge-info">Yes</span></td>
+                    {% else %}
+                    <td>
+                        <span class="badge badge-danger">No </span>
+                    </td>
+                    {% endif %}
+
+                    {% if item.sold_date %}
                     <td>{{ item.sold_date }}</td>
-                    <td>{{ item.sold_by }}</td>
+                    {% else %}
+                    <td>
+                        <span class="badge badge-danger">Not Sold</span>
+                    </td>
+                    {% endif %}
+
+                    {% if item.customers == None %}
+                    <td>{{ item.customers }}</td>
+                    {% else %}
+                    <td>
+                        <span class="badge badge-danger">Not Sold</span>
+                    </td>
+                    {% endif %}
+                   
+                    
+                    
                     <td>Admin</td>
                     <td>
                         <div class="actions">
 
-                            <a href="item/{{ item.id }}">View</a>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-title="{{ item.name_item }} - {{ item.sn }}" 
+                            data-content="<strong>Item ID:<strong/>  {{ item.id }} <br> Item Name: {{ item.name_item }}">
+                                View
+                                </button>
+
                             <a href="item/{{ item.id }}/edit">Edit</a>
                             <a href="item/{{ item.id }}/edit">Sell</a>
                             <form action="deleteitem" method="post">
@@ -143,11 +173,55 @@
 
             </tbody>
         </table>
+        
     </div>
+
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Item Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 </body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var title = button.data('title'); // Extract title from data-* attributes
+        var content = button.data('content'); // Extract content from data-* attributes
+
+ 
+
+        var modal = $(this);
+        modal.find('.modal-title').text(title); 
+        modal.find('.modal-body').html(content);
+
+ 
+    });
+</script>
+
+
 
 </html>

@@ -45,3 +45,14 @@ body{
     background-color: #6c757d; /* لون مختلف للقسم النشط */
     font-weight: bold;
 }
+
+
+#Availble{
+    background-color: lightblue; /* لون الخلفية */
+color: yellow; /* لون النص */
+padding: 10px; /* مساحة داخلية حول النص */
+display: inline;
+
+}
+
+
