@@ -55,4 +55,19 @@ display: inline;
 
 }
 
+#back {
+    width: 50%;
+}
+
+#Item_SN {
+    margin: 10px 25px;
+
+
+}
+
+#Item_name {
+    margin: 10px;
+}
+
+
 
