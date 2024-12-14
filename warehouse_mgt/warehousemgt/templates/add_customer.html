@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    {% load static %}
+    <title>Add New Customer</title>
+</head>
+
+<body>
+    <div>
+
+        <h1>Add a New Customer</h1>
+        <form action="/add_customer" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="all_col">
+                <div class="first_col">
+                    <div class="mb-3">
+
+                        <label for="first_name" class="form-label">First Name:</label>
+                        <input type="text" name="first_name" placeholder="first_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="second_name" class="form-label">Last Name: </label>
+                        <input type="text" name="second_name" placeholder="second_name" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="identity" class="form-label">Identity Number : </label>
+                        <input type="text" name="identity" placeholder="identity" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password: </label>
+                        <input type="password" name="password" placeholder="Password" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm Password: </label>
+                        <input type="password" name="confirm_password" placeholder="confirm_password"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="sec_col">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email: </label>
+                        <input type="email" name="email" placeholder="email" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="birthday" class="form-label">Last Name: </label>
+                        <input type="date" name="birthday" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes: </label>
+                        <textarea class="form-control" name="notes" rows="4" cols="30"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Browse Photo</label>
+                        <input type="file" name="file" id="file" class="form-control"><br />
+                    </div>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-info">Add New Customer</button>
+    </div>
+    </form>
+    </div>
+
+    <img src="{% static 'img/add_customer.png' %}" alt="icon" class="logo" />
+
+</body>
+
+<style>
+    h1 {
+        margin: 30px;
+    }
+
+    body {
+        margin: 40px;
+        display: flex;
+        justify-content: space-around;
+        background-color: whitesmoke;
+        border: 5px solid black;
+        padding: 40px;
+    }
+
+
+    .all_col {
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+    .first_col {
+        margin-right: 100px;
+    }
+</style>
+
+</html>

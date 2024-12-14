@@ -9,6 +9,8 @@ urlpatterns = [
     path('add_item', views.add_item ,name='add_item'),
     path('delete_item', views.delete_item ,name='delete_item'),
     
+    path('add_customer', views.add_customer ,name='add_customer'),
+    
     
     path('get_item_data/', views.get_item_data, name='get_item_data'),
     path('update_item/', views.update_item, name='update_item'),

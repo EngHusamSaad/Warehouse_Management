@@ -22,9 +22,8 @@ def login(request):
 
 
 def customers(request):
-    if request.method =="POST":
-        return render(request,"customers.html")
-    return render(request,"customers.html")
+    data = {"all_customers": Customer.objects.all()}
+    return render(request,"customers.html",data)
 
 
 
@@ -103,3 +102,41 @@ def update_item(request):
         except Item.DoesNotExist:
             return JsonResponse({'error': 'Item not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def add_customer(request):
+    
+    if request.method == 'GET':
+        return render(request,"add_customer.html")
+    
+    if request.method == 'POST':
+        form = MyForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['file']
+            first_name = request.POST.get("first_name")
+            second_name = request.POST.get("second_name")
+            identity = request.POST.get("identity")
+            email = request.POST.get("email")
+            birthday = request.POST.get("birthday")
+            password = request.POST.get("password")
+            notes = request.POST.get("notes")
+           
+            document = Document.objects.create(file=file, title=first_name)
+            
+            new_customer=Customer.objects.create(
+                photo=document,
+                first_name=first_name,
+                second_name=second_name,
+                identity=identity,
+                email=email,
+                birthday=birthday,
+                password=password,
+                notes=notes,
+                
+            )
+            
+            return redirect("/customers") 
+        else:
+            return render(request, "add_customer.html", {"form": form})
+        
+
+
