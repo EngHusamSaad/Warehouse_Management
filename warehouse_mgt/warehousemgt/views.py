@@ -1,11 +1,15 @@
 from django.shortcuts import render,HttpResponse,redirect
 from warehousemgt.models import *
 from .forms import MyForm
+from django.http import JsonResponse
+from .models import *
+import json
 
 
 
 
-# Create your views here.
+
+
 
 
 def index(request):
@@ -54,31 +58,48 @@ def delete_item(request):
     item.delete()
 
     return redirect("/login")
-    
-    
-    
-def edit_item(request):
-        form = MyForm(request.POST, request.FILES)
-        item = request.POST["item_id"]
-        # edit_item = Item.objects.get(id=int(item))
-        
-        print(item)
-        return redirect("/login") 
-        
-        # if form.is_valid():
-        #     file = form.cleaned_data['file']
-        #     name_item = request.POST.get("Item_name")
-        #     sn = request.POST.get("Item_SN")
-        #     description = request.POST.get("description")
-        #     document = Document.objects.create(file=file, title=name_item)
+
+
+def get_item_data(request):
+    item_id = request.GET.get('id')  # الحصول على `id` من الطلب
+    if not item_id:
+        return JsonResponse({'error': 'Item ID not provided'}, status=400)
+
+    try:
+        item = Item.objects.get(id=item_id)  # الحصول على العنصر من قاعدة البيانات
+        data = {
+            'id': item.id,
+            'name_item': item.name_item,
+            'item_sn': item.sn,
+            'description': item.description,
+            'isAvailble': item.isAvailble,
+            'sold_date': item.sold_date,
+            # 'item': item.icon,
             
-        #     edit_item.name_item=name_item,
-        #     edit_item.icon=document,
-        #     edit_item.sn=sn,
-        #     edit_item.description=description,
-            
-        #     edit_item.save()
-        #     return redirect("/login") 
-        # else:
-        #     return render(request, "add_item.html", {"form": form})
+        }
+        print(item.icon.file.url)
+        return JsonResponse(data)
+    except Item.DoesNotExist:
+        return JsonResponse({'error': 'Item not found'}, status=404)
+
+
     
+    
+def update_item(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        item_id = data.get('id')
+        item_name = data.get('name_item')
+        item_sn = data.get('item_sn')
+        item_description = data.get('description')
+
+        try:
+            item = Item.objects.get(id=item_id)
+            item.name_item = item_name
+            item.sn = item_sn
+            item.description = item_description
+            item.save()
+            return JsonResponse({'success': True})
+        except Item.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -1,7 +1,8 @@
 
 from django.db import models
 from datetime import datetime
-# Create your models here.
+
+# # Create your models here.
 class Document(models.Model):
     title = models.CharField(max_length=100)
     file = models.FileField(upload_to='imgs/')
@@ -34,17 +35,11 @@ class Employee(User):
     
 class Item(models.Model):
     name_item=models.CharField(max_length=50)
-    icon = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
     sn=models.IntegerField()
     isAvailble=models.BooleanField(default=True)
     description=models.TextField()
     sold_date=models.DateField(null=True, blank=True)
-    customers = models.ManyToManyField(Customer, related_name="items", blank=True)
-    sold_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    customer = models.ForeignKey(Customer, related_name="items", blank=True,on_delete=models.CASCADE,null=True)
+    icon = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
-    
-
-        
-    
-    

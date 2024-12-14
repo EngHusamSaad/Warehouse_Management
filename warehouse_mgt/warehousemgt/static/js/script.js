@@ -33,6 +33,7 @@
 // });
 
 
-$('#myModal').modal(options)
+
+
 
 
