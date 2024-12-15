@@ -136,62 +136,44 @@
                     </td>
                     {% endif %}
 
-                    {% if item.customers == None %}
-                    <td>{{ item.customers }}</td>
+                    {% if item.customer %}
+                    <td>{{ item.customer.first_name }} {{ item.customer.second_name }}</td>
                     {% else %}
                     <td>
                         <span class="badge badge-danger">Not Sold</span>
                     </td>
                     {% endif %}
-
-
-
                     <td>Admin</td>
                     <td>
                         <div class="actions">
-
-
-
-
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal" data-id="{{ item.id }}">
                                 Edit
-                                {{ item.id }}
                             </button>
-
-
-
-
-                            <button type="button" class="btn btn-success" data-toggle="modal"
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">
+                                Select Customer
+                            </button>
+                            <!-- <button type="button" class="btn btn-success" data-toggle="modal"
                                 data-target="#exampleModal"
                                 data-title="Sell Item : {{ item.name_item }} - SN: {{ item.sn }}" data-content="
                                     <strong>Item Name:</strong> {{ item.name_item }} <br /><br />
                                     <strong>Item SN:</strong> {{ item.sn }} <br><br />">
                                 Sell
-                            </button>
-
+                            </button> -->
                             <form action="delete_item" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="item_id" value="{{ item.id }}">
                                 <button type="submit">Delete</button>
                             </form>
-
-
                         </div>
                     </td>
-
                 </tr>
-
                 {% endfor %}
-
-
             </tbody>
         </table>
-
     </div>
 
-
-    <!-- Modal -->
+    <!-- Modal-Edit -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -231,6 +213,36 @@
         </div>
     </div>
 
+    <!-- Modal-Sell -->
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Select Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="selectCustomerForm" method="post" action="{% url 'select_customer' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="customerSelect" class="form-label">Choose a Customer</label>
+                        <select class="form-select" id="customerSelect" name="customer_id">
+                            <option value="" disabled selected>Select a customer</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="selectCustomerForm" class="btn btn-primary">Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 </body>
@@ -261,7 +273,7 @@
                         document.getElementById('item_sn').value = data.item_sn;
                         document.getElementById('item_description').value = data.description;
                         // document.getElementById('item_icon').src = "http://127.0.0.1:8000/" + item.icon.file.url;
-                        
+
 
                     }
                 })
@@ -272,7 +284,7 @@
         });
     });
 
-    document.querySelector('#update_item').addEventListener('click', function() {
+    document.querySelector('#update_item').addEventListener('click', function () {
         var itemId = document.getElementById('item_id').value;
         var itemName = document.getElementById('item_name').value;
         var itemSn = document.getElementById('item_sn').value;
@@ -291,20 +303,71 @@
                 description: itemDescription
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Item updated successfully!');
-                location.reload(); // إعادة تحميل الصفحة بعد التحديث
-            } else {
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Item updated successfully!');
+                    location.reload(); // إعادة تحميل الصفحة بعد التحديث
+                } else {
+                    alert('Failed to update item!');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating item:', error);
                 alert('Failed to update item!');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating item:', error);
-            alert('Failed to update item!');
+            });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var customerModal = document.getElementById('customerModal');
+        customerModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            
+            fetch(`/customers_view`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        var customerSelect = document.getElementById('customerSelect');
+                        customerSelect.innerHTML = '';
+
+                        data.forEach(customer => {
+                        var option = document.createElement('option');
+                        option.value = customer.id;
+                        option.textContent = `${customer.first_name} ${customer.second_name}`;
+                        customerSelect.appendChild(option);
+                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching item data:', error);
+                    alert('Failed to fetch item data!');
+                });
         });
     });
+
+    document.getElementById('selectCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const selectedCustomer = document.getElementById('customerSelect').value;
+
+    fetch('/select_customer/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ customer_id: selectedCustomer })
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data); // طباعة البيانات المُرسلة
+        alert(`Customer Selected: ${data}`);
+    })
+    .catch(error => console.error('Error:', error));
+});
+
 
 </script>
 

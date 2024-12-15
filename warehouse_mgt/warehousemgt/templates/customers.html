@@ -118,7 +118,22 @@
                         <td>{{ customer.updated_at }}</td>
                         <td>{{ customer.birthday }}</td>
 
-                        <td>{{ customer.items }}</td>
+                        <td>
+
+                        {% if customer.items.all %}
+
+                            {% for item in customer.items.all %}
+
+                               <a href=""> {{ item.name_item }} </a>
+
+                            {% endfor %}
+
+                        {% else %}
+                        <span><strong>No Customer </strong></span>
+
+                        {% endif %}
+                    </td>
+                        
 
                         <td>{{ customer.notes }}</td>
 
@@ -137,17 +152,17 @@
 
 
 
-                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                <!-- <button type="button" class="btn btn-success" data-toggle="modal"
                                     data-target="#exampleModal"
                                     data-title="Sell Item : {{ item.name_item }} - SN: {{ item.sn }}" data-content="
                                     <strong>Item Name:</strong> {{ item.name_item }} <br /><br />
                                     <strong>Item SN:</strong> {{ item.sn }} <br><br />">
                                     Sell
-                                </button>
+                                </button> -->
 
-                                <form action="delete_item" method="post">
+                                <form action="delete_customer" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <input type="hidden" name="customer_id" value="{{ customer.id }}">
                                     <button type="submit">Delete</button>
                                 </form>
 

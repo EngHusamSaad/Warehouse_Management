@@ -22,7 +22,11 @@ def login(request):
 
 
 def customers(request):
-    data = {"all_customers": Customer.objects.all()}
+    all_customers=Customer.objects.all()
+    
+    data = {
+        "all_customers": all_customers,
+        }
     return render(request,"customers.html",data)
 
 
@@ -57,6 +61,14 @@ def delete_item(request):
     item.delete()
 
     return redirect("/login")
+
+
+def delete_customer(request):
+    delete_customer = request.POST["customer_id"]
+    customer = Customer.objects.get(id=int(delete_customer))
+    customer.delete()
+
+    return redirect("/customers")
 
 
 def get_item_data(request):
@@ -138,5 +150,17 @@ def add_customer(request):
         else:
             return render(request, "add_customer.html", {"form": form})
         
+def customers_view(request):
+    try:
+        customers = Customer.objects.all().values('id', 'first_name', 'second_name')
+        return JsonResponse(list(customers), safe=False)
+    except Exception as e:
+        print(f"Error fetching customers: {e}")
+        return JsonResponse({'error': 'Failed to retrieve customers'}, status=500)
 
+def select_customer(request):
+    if request.method == 'POST':
+        customer_id = request.POST.get('customer_id')
+        customer = Customer.objects.get(id=customer_id)
+        return HttpResponse(f"Selected Customer: {customer.first_name} {customer.second_name}")
 
