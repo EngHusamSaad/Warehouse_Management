@@ -68,12 +68,25 @@
             </div>
 
 
-            <button type="submit" class="btn btn-info">Add New Customer</button>
+            <button type="submit" class="btn btn-info">Add New Customer</button><br><br>
+
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
     </div>
+
     </form>
+
     </div>
 
     <img src="{% static 'img/add_customer.png' %}" alt="icon" class="logo" />
+
+
+
 
 </body>
 
@@ -100,6 +113,11 @@
 
     .first_col {
         margin-right: 100px;
+    }
+
+    li{
+        color: red;
+        font-weight: bold;
     }
 </style>
 

@@ -4,6 +4,7 @@ from .forms import MyForm
 from django.http import JsonResponse
 from .models import *
 import json
+from django.contrib import messages
 
 
 
@@ -121,7 +122,13 @@ def add_customer(request):
         return render(request,"add_customer.html")
     
     if request.method == 'POST':
+        errors = Customer.objects.user_validator(request.POST)
         form = MyForm(request.POST, request.FILES)
+        
+        if len(errors) > 0:
+            for key, value in errors.items():
+                messages.error(request, value)
+            return render(request, "add_customer.html", {"form": form})
         if form.is_valid():
             file = form.cleaned_data['file']
             first_name = request.POST.get("first_name")
