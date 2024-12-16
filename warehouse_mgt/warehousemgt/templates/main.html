@@ -146,24 +146,27 @@
                     <td>Admin</td>
                     <td>
                         <div class="actions">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal" data-id="{{ item.id }}">
+                            <button 
+                                type="button" 
+                                class="btn btn-primary" 
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal" 
+                                data-id="{{ item.id }}">
                                 Edit
                             </button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">
+                            <button 
+                                type="button" 
+                                class="btn btn-primary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#customerModal"
+                                data-id="{{ item.id }}">
                                 Select Customer
                             </button>
-                            <!-- <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#exampleModal"
-                                data-title="Sell Item : {{ item.name_item }} - SN: {{ item.sn }}" data-content="
-                                    <strong>Item Name:</strong> {{ item.name_item }} <br /><br />
-                                    <strong>Item SN:</strong> {{ item.sn }} <br><br />">
-                                Sell
-                            </button> -->
+        
                             <form action="delete_item" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="item_id" value="{{ item.id }}">
-                                <button type="submit">Delete</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </div>
                     </td>
@@ -185,12 +188,6 @@
                     <form id="editItemForm">
                         {% csrf_token %}
                         <input type="hidden" id="item_id">
-
-                        <!-- <div class="mb-3">
-                            <label for="item_icon" class="form-label">Item Icon: </label>
-                            <img alt="icon" class="icon" id="item_icon" src="" />
-                        </div> -->
-
                         <div class="mb-3">
                             <label for="item_name" class="form-label">Item Name: </label>
                             <input type="text" class="form-control" id="item_name">
@@ -207,14 +204,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="update_item">Save changes</button>
+                    <button type="submit" class="btn btn-primary" id="update_item" >Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal-Sell -->
-
+    <!-- Sell -Modal -->
 <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -225,6 +221,7 @@
             <div class="modal-body">
                 <form id="selectCustomerForm" method="post" action="{% url 'select_customer' %}">
                     {% csrf_token %}
+                    <input type="hidden" id="item_id_modal" name="item_id" value="">
                     <div class="mb-3">
                         <label for="customerSelect" class="form-label">Choose a Customer</label>
                         <select class="form-select" id="customerSelect" name="customer_id">
@@ -235,7 +232,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="selectCustomerForm" class="btn btn-primary">Select</button>
+                <button type="button" form="selectCustomerForm" class="btn btn-primary" id="select_customer">Select</button>
             </div>
         </div>
     </div>
@@ -318,11 +315,12 @@
             });
     });
 
-
     document.addEventListener('DOMContentLoaded', function () {
         var customerModal = document.getElementById('customerModal');
         customerModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
+            var itemId = button.getAttribute('data-id');
+            document.getElementById('item_id_modal').value = itemId;
             
             fetch(`/customers_view`)
                 .then(response => response.json())
@@ -348,27 +346,43 @@
         });
     });
 
-    document.getElementById('selectCustomerForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const selectedCustomer = document.getElementById('customerSelect').value;
 
-    fetch('/select_customer/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ customer_id: selectedCustomer })
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log(data); // طباعة البيانات المُرسلة
-        alert(`Customer Selected: ${data}`);
-    })
-    .catch(error => console.error('Error:', error));
-});
+    document.querySelector('#select_customer').addEventListener('click', function () {
+        var selectedCustomer = document.getElementById('customerSelect').value;
+        var itemId = document.getElementById('item_id_modal').value;
+        
 
+        fetch('/select_customer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                
+                "customer_id":selectedCustomer,
+                "item_id": itemId
+               
+                
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
 
+                    alert(data.message);
+                    location.reload(); // إعادة تحميل الصفحة بعد التحديث
+                } else {
+                    alert('Failed!');
+                }
+            })
+            .catch(error => {
+                //console.error('Error updating item:', error);
+                alert('Failed to update item!');
+            });
+    });
+
+    
 </script>
 
 

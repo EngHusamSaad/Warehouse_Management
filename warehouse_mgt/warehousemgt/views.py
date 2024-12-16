@@ -158,9 +158,34 @@ def customers_view(request):
         print(f"Error fetching customers: {e}")
         return JsonResponse({'error': 'Failed to retrieve customers'}, status=500)
 
-def select_customer(request):
-    if request.method == 'POST':
-        customer_id = request.POST.get('customer_id')
-        customer = Customer.objects.get(id=customer_id)
-        return HttpResponse(f"Selected Customer: {customer.first_name} {customer.second_name}")
 
+
+def select_customer(request):
+    
+    if request.method == 'POST':
+        try:
+            print(request.body)
+
+            data = json.loads(request.body)
+            item_id = data.get('item_id')
+            customer_id = data.get('customer_id')
+            
+            customer_select=Customer.objects.get(id=customer_id)
+            item=Item.objects.get(id=item_id)
+            
+            item.customer=customer_select
+            item.isAvailble=False
+            item.sold_date=datetime.now()
+            item.save()
+            return JsonResponse({'success': True, 'message': f'{item.name_item} was sold Successfully by {customer_select.first_name} {customer_select.second_name} ! '})
+        
+        except json.JSONDecodeError as e:
+            return JsonResponse({
+        "error": "Invalid JSON format",
+        "message": str(e)
+    }, status=400)
+    else:
+            return JsonResponse({"error": "Invalid request method"}, status=405)
+
+            
+            
