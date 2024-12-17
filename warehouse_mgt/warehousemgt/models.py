@@ -59,10 +59,18 @@ class CustomerManger(models.Manager):
         
         return errors
         
+class ItemManger(models.Manager):
+    def item_validator(self,formdata):
+        errors={}
+        if len(formdata["Item_name"]) <2:
+            errors['Item_name']="Item name should be at least 2 Chars" 
+                                        
+        if not formdata["Item_SN"].isdigit() or len(formdata["Item_SN"]) != 5:
+            errors['Item_SN'] = "Wrong Serial Number !"
         
-        
-        
-        
+        if len(formdata["description"]) < 5:
+            errors['description']="Description should be at least 5 Chars"
+        return errors
         
 class Document(models.Model):
     title = models.CharField(max_length=100)
@@ -83,7 +91,6 @@ class User(models.Model):
         birthday=models.DateField()
         created_at=models.DateTimeField(auto_now_add=True)
         updated_at=models.DateTimeField(auto_now=True)
-        
         
 
         def __str__(self):
@@ -107,3 +114,4 @@ class Item(models.Model):
     icon = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    objects=ItemManger()

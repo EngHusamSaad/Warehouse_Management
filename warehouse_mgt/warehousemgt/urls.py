@@ -16,8 +16,11 @@ urlpatterns = [
     
     
     path('get_item_data/', views.get_item_data, name='get_item_data'),
+    path('get_item_data/<int:item_id>/', views.get_item_data, name='get_item_data_id'),
+
     path('update_item/', views.update_item, name='update_item'),
     path('select_customer/', views.select_customer, name='select_customer'),
+
 
 
     

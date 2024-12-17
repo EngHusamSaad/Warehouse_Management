@@ -5,10 +5,7 @@ from django.http import JsonResponse
 from .models import *
 import json
 from django.contrib import messages
-
-
-
-
+import bcrypt
 
 
 
@@ -18,7 +15,10 @@ def index(request):
 
 
 def login(request):
-    data = {"all_items": Item.objects.all()}
+    data = {
+        "all_items": Item.objects.all(),
+        "count" :Item.objects.all().count,
+        }
     return render(request,"main.html",data)
 
 
@@ -27,9 +27,9 @@ def customers(request):
     
     data = {
         "all_customers": all_customers,
+        "count" :Customer.objects.all().count,
         }
     return render(request,"customers.html",data)
-
 
 
 def add_item(request):
@@ -38,13 +38,22 @@ def add_item(request):
         return render(request,"add_item.html")
     
     if request.method == 'POST':
+        errors = Item.objects.item_validator(request.POST)
         form = MyForm(request.POST, request.FILES)
+        
+        if len(errors) > 0:
+            for key, value in errors.items():
+                messages.error(request, value)
+            return render(request, "add_item.html", {"form": form})
         if form.is_valid():
             file = form.cleaned_data['file']
             name_item = request.POST.get("Item_name")
             sn = request.POST.get("Item_SN")
             description = request.POST.get("description")
+           
             document = Document.objects.create(file=file, title=name_item)
+             
+            
             new_item = Item.objects.create(
                 name_item=name_item,
                 icon=document,
@@ -63,7 +72,6 @@ def delete_item(request):
 
     return redirect("/login")
 
-
 def delete_customer(request):
     delete_customer = request.POST["customer_id"]
     customer = Customer.objects.get(id=int(delete_customer))
@@ -73,12 +81,12 @@ def delete_customer(request):
 
 
 def get_item_data(request):
-    item_id = request.GET.get('id')  # الحصول على `id` من الطلب
+    item_id = request.GET.get('id')   
     if not item_id:
         return JsonResponse({'error': 'Item ID not provided'}, status=400)
 
     try:
-        item = Item.objects.get(id=item_id)  # الحصول على العنصر من قاعدة البيانات
+        item = Item.objects.get(id=item_id) 
         data = {
             'id': item.id,
             'name_item': item.name_item,
@@ -93,9 +101,6 @@ def get_item_data(request):
         return JsonResponse(data)
     except Item.DoesNotExist:
         return JsonResponse({'error': 'Item not found'}, status=404)
-
-
-    
     
 def update_item(request):
     if request.method == 'POST':
@@ -104,7 +109,6 @@ def update_item(request):
         item_name = data.get('name_item')
         item_sn = data.get('item_sn')
         item_description = data.get('description')
-
         try:
             item = Item.objects.get(id=item_id)
             item.name_item = item_name
@@ -138,7 +142,10 @@ def add_customer(request):
             birthday = request.POST.get("birthday")
             password = request.POST.get("password")
             notes = request.POST.get("notes")
-           
+            
+            
+             
+            pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
             document = Document.objects.create(file=file, title=first_name)
             
             new_customer=Customer.objects.create(
@@ -148,7 +155,7 @@ def add_customer(request):
                 identity=identity,
                 email=email,
                 birthday=birthday,
-                password=password,
+                password=pw_hash,
                 notes=notes,
                 
             )
@@ -193,6 +200,18 @@ def select_customer(request):
     }, status=400)
     else:
             return JsonResponse({"error": "Invalid request method"}, status=405)
-
-            
-            
+        
+        
+def get_item_data(request, item_id):
+    try:
+        item = Item.objects.get(id=item_id)
+        data = {
+            'name_item': item.name_item,
+            'item_sn': item.sn,
+            'description': item.description,
+            'icon' :item.icon.file.url,
+        }
+        return JsonResponse(data)
+    except Item.DoesNotExist:
+        # إذا لم يُعثر على العنصر
+        return JsonResponse({'error': 'Item not found'}, status=404)

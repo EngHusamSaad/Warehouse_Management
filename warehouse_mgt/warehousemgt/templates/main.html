@@ -31,36 +31,36 @@
         </a>
         <hr>
 
-        <div id="">
 
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li>
-                    <a href="/login" class="nav-link active  text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#speedometer2"></use>
-                        </svg>
-                        Inventory
-                    </a>
-                </li>
 
-                <li>
-                    <a href="/customers" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#grid"></use>
-                        </svg>
-                        Customers
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#people-circle"></use>
-                        </svg>
-                        Employees
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li>
+                <a href="/login" class="nav-link active  text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#speedometer2"></use>
+                    </svg>
+                    Inventory
+                </a>
+            </li>
+
+            <li>
+                <a href="/customers" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid"></use>
+                    </svg>
+                    Customers
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle"></use>
+                    </svg>
+                    Employees
+                </a>
+            </li>
+        </ul>
+
         <hr>
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
@@ -68,7 +68,7 @@
                 <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
                 <strong>Husam Saad</strong>
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <ul class="dropdown-menu   " aria-labelledby="dropdownUser1">
                 <li><a class="dropdown-item" href="#">Edit Profile</a></li>
                 <li><a class="dropdown-item" href="#">Add Customer</a></li>
                 <li><a class="dropdown-item" href="#">Add Product</a></li>
@@ -84,9 +84,10 @@
 
         <h1>Al-Shahd Company - Inventory</h1>
         <nav class="navbar navbar-light bg-light">
-            <form class="form-inline" id="search">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <form class="form-inline" id="searchForm">
+                <input class="form-control mr-sm-2" type="search" id="searchInput" placeholder="Search"
+                    aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchButton">Search</button>
             </form>
 
 
@@ -143,26 +144,27 @@
                         <span class="badge badge-danger">Not Sold</span>
                     </td>
                     {% endif %}
+
+                    {% if item.customer %}
                     <td>Admin</td>
+                    {% else %}
+                    <td>
+                        <span class="badge badge-danger">Not Sold</span>
+                    </td>
+                    {% endif %}
+
+
                     <td>
                         <div class="actions">
-                            <button 
-                                type="button" 
-                                class="btn btn-primary" 
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal" 
-                                data-id="{{ item.id }}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal" data-id="{{ item.id }}">
                                 Edit
                             </button>
-                            <button 
-                                type="button" 
-                                class="btn btn-primary" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#customerModal"
-                                data-id="{{ item.id }}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#customerModal" data-id="{{ item.id }}">
                                 Select Customer
                             </button>
-        
+
                             <form action="delete_item" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="item_id" value="{{ item.id }}">
@@ -174,6 +176,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <strong>Total Items: {{ count }}</strong>
     </div>
 
     <!-- Modal-Edit -->
@@ -190,53 +193,54 @@
                         <input type="hidden" id="item_id">
                         <div class="mb-3">
                             <label for="item_name" class="form-label">Item Name: </label>
-                            <input type="text" class="form-control" id="item_name">
+                            <input type="text" class="form-control" id="item_name" name="Item_name">
                         </div>
                         <div class="mb-3">
                             <label for="item_sn" class="form-label">Item SN: </label>
-                            <input type="text" class="form-control" id="item_sn">
+                            <input type="text" class="form-control" id="item_sn" name="Item_SN">
                         </div>
                         <div class="mb-3">
                             <label for="item_description" class="form-label">Description: </label>
-                            <textarea class="form-control" id="item_description" rows="3"></textarea>
+                            <textarea class="form-control" id="item_description" rows="3" name="description"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="update_item" >Save changes</button>
+                    <button type="submit" class="btn btn-primary" id="update_item">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Sell -Modal -->
-<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="customerModalLabel">Select Customer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="selectCustomerForm" method="post" action="{% url 'select_customer' %}">
-                    {% csrf_token %}
-                    <input type="hidden" id="item_id_modal" name="item_id" value="">
-                    <div class="mb-3">
-                        <label for="customerSelect" class="form-label">Choose a Customer</label>
-                        <select class="form-select" id="customerSelect" name="customer_id">
-                            <option value="" disabled selected>Select a customer</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" form="selectCustomerForm" class="btn btn-primary" id="select_customer">Select</button>
+    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Select Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="selectCustomerForm" method="post" action="{% url 'select_customer' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="item_id_modal" name="item_id" value="">
+                        <div class="mb-3">
+                            <label for="customerSelect" class="form-label">Choose a Customer</label>
+                            <select class="form-select" id="customerSelect" name="customer_id">
+                                <option value="" disabled selected>Select a customer</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" form="selectCustomerForm" class="btn btn-primary"
+                        id="select_customer">Select</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -249,6 +253,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 
@@ -321,7 +327,7 @@
             var button = event.relatedTarget;
             var itemId = button.getAttribute('data-id');
             document.getElementById('item_id_modal').value = itemId;
-            
+
             fetch(`/customers_view`)
                 .then(response => response.json())
                 .then(data => {
@@ -332,11 +338,11 @@
                         customerSelect.innerHTML = '';
 
                         data.forEach(customer => {
-                        var option = document.createElement('option');
-                        option.value = customer.id;
-                        option.textContent = `${customer.first_name} ${customer.second_name}`;
-                        customerSelect.appendChild(option);
-                    });
+                            var option = document.createElement('option');
+                            option.value = customer.id;
+                            option.textContent = `${customer.first_name} ${customer.second_name}`;
+                            customerSelect.appendChild(option);
+                        });
                     }
                 })
                 .catch(error => {
@@ -350,7 +356,6 @@
     document.querySelector('#select_customer').addEventListener('click', function () {
         var selectedCustomer = document.getElementById('customerSelect').value;
         var itemId = document.getElementById('item_id_modal').value;
-        
 
         fetch('/select_customer/', {
             method: 'POST',
@@ -359,11 +364,9 @@
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             body: JSON.stringify({
-                
-                "customer_id":selectedCustomer,
+
+                "customer_id": selectedCustomer,
                 "item_id": itemId
-               
-                
             })
         })
             .then(response => response.json())
@@ -381,10 +384,5 @@
                 alert('Failed to update item!');
             });
     });
-
-    
 </script>
-
-
-
 </html>

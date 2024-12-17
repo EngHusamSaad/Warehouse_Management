@@ -10,13 +10,9 @@
     <title>Add New Item</title>
 </head>
 
-<body>
-
+<body class="add_item_body">
     <div>
-
         <h1>Add a New Item</h1>
-
-
         <form action="/add_item" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
@@ -41,6 +37,13 @@
 
                 <button type="submit" class="btn btn-info">Add New Item</button>
                 <a href="login" class="btn btn-warning">Back To Main</a>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </form>
     </div>
@@ -54,7 +57,7 @@
         margin: 30px;
     }
 
-    body {
+    .add_item_body {
         margin: 40px;
         display: flex;
         justify-content: space-around;
@@ -63,6 +66,10 @@
         padding: 40px;
     }
 
+    li {
+        color: red;
+        font-weight: bold;
+    }
 </style>
 
 </html>
