@@ -6,13 +6,15 @@ from .models import *
 import json
 from django.contrib import messages
 import bcrypt
+from django.core.mail import send_mail
 
+import string
+import random
 
 
 
 def index(request):
     return render(request,"login.html")
-
 
 def login(request):
     data = {
@@ -20,7 +22,6 @@ def login(request):
         "count" :Item.objects.all().count,
         }
     return render(request,"main.html",data)
-
 
 def customers(request):
     all_customers=Customer.objects.all()
@@ -30,7 +31,6 @@ def customers(request):
         "count" :Customer.objects.all().count,
         }
     return render(request,"customers.html",data)
-
 
 def add_item(request):
     
@@ -63,8 +63,7 @@ def add_item(request):
             return redirect("/login") 
         else:
             return render(request, "add_item.html", {"form": form})
-        
-        
+              
 def delete_item(request):
     delete_item = request.POST["item_id"]
     item = Item.objects.get(id=int(delete_item))
@@ -78,7 +77,6 @@ def delete_customer(request):
     customer.delete()
 
     return redirect("/customers")
-
 
 def get_item_data(request):
     item_id = request.GET.get('id')   
@@ -172,8 +170,6 @@ def customers_view(request):
         print(f"Error fetching customers: {e}")
         return JsonResponse({'error': 'Failed to retrieve customers'}, status=500)
 
-
-
 def select_customer(request):
     
     if request.method == 'POST':
@@ -200,9 +196,8 @@ def select_customer(request):
     }, status=400)
     else:
             return JsonResponse({"error": "Invalid request method"}, status=405)
-        
-        
-def get_item_data(request, item_id):
+              
+def view_item_data(request, item_id):
     try:
         item = Item.objects.get(id=item_id)
         data = {
@@ -213,5 +208,57 @@ def get_item_data(request, item_id):
         }
         return JsonResponse(data)
     except Item.DoesNotExist:
-        # إذا لم يُعثر على العنصر
         return JsonResponse({'error': 'Item not found'}, status=404)
+  
+  
+  
+def rest_password(request):
+    
+    
+    
+    data = json.loads(request.body)
+    type_Email = data.get('email')
+    
+    res = ''.join(random.choices(string.ascii_letters,k=5))
+    pw_hash = bcrypt.hashpw(res.encode(), bcrypt.gensalt()).decode()
+    
+    customer=User.objects.filter(email=type_Email).first()
+    if customer:
+        customer.password=pw_hash
+        customer.save()
+        
+        if request.method == 'POST':
+            send_mail(
+            'ٌٌRest Password-Al-Shahd WareHouse',  # عنوان الرسالة
+            "Welcaome on Al-Shahd WareHouse , Your New Password:- "+str(res),  # نص الرسالة
+            'System@palestinebar.ps',  # البريد المرسل
+            [type_Email],  # البريد المرسل إليه
+            fail_silently=False,
+        )
+            return JsonResponse({"message": "Password reset successfully"}, status=200)
+    
+    else:
+        return JsonResponse({"message": "User not found"}, status=404)
+
+    
+def rest_password_in(request):
+    
+    rest_customer = request.POST["customer_id"]
+    customer = Customer.objects.get(id=int(rest_customer))
+    res = ''.join(random.choices(string.ascii_letters,k=5))
+    pw_hash = bcrypt.hashpw(res.encode(), bcrypt.gensalt()).decode()
+    
+    customer.password=pw_hash
+    customer.save()
+    
+    send_mail(
+            'ٌٌRest Password-Al-Shahd WareHouse',  # عنوان الرسالة
+            "Welcaome on Al-Shahd WareHouse , Your New Password:- "+str(res),  # نص الرسالة
+            'System@palestinebar.ps',  # البريد المرسل
+            [customer.email],  # البريد المرسل إليه
+            fail_silently=False,
+    )
+    
+    
+            
+    return redirect("/customers")

@@ -47,7 +47,12 @@
                                 Remember me
                             </label>
                         </div>
-                        <a href="#!" class="text-body">Forgot password?</a>
+
+                        <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#restpasswordModal">
+                            Forgot password?
+                        </button>
+                        
+                        
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
@@ -76,7 +81,42 @@
 
     </section>
 
+
+
+<!-- RestPassword-Modal -->
+<div class="modal top fade" id="restpasswordModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+    <div class="modal-dialog" style="width: 300px;">
+        <div class="modal-content text-center">
+            <div class="modal-header h5 text-white bg-primary justify-content-center">
+                Password Reset
+            </div>
+            <div class="modal-body px-5">
+                <form id="editItemForm">
+                    {% csrf_token %}
+                <p class="py-2">
+                    Enter your email address and we'll send you an email with instructions to reset your password.
+                </p>
+                <div data-mdb-input-init class="form-outline">
+                    <input type="email" id="typeEmail" class="form-control my-3" />
+                    <label class="form-label" for="typeEmail">Email input</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100" id="rest_password">Rest password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
     .divider:after,
@@ -97,5 +137,47 @@
         }
     }
 </style>
+
+
+<script>
+    $(document).ready(function() {
+        $('#restpasswordModal').modal('hide');
+        $('button[data-mdb-target="#restpasswordModal"]').click(function() {
+            $('#restpasswordModal').modal('show');
+            document.getElementById("typeEmail")
+        });
+    });
+
+    document.querySelector('#rest_password').addEventListener('click', function () {
+        var type_Email = document.getElementById('typeEmail').value;
+        
+
+        fetch('/rest_password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                email: type_Email,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Email was sent successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to send Email !');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating item:', error);
+                alert('Failed to update item!');
+            });
+    });
+
+
+</script>
 
 </html>

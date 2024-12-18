@@ -83,8 +83,6 @@
 
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 
-
-
             </form>
             <a href="/add_customer" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Add
                 Customer</a>
@@ -140,16 +138,24 @@
 
                         <td>
                             <div class="actions">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#exampleModal" data-id="{{ item.id }}">
                                     Edit
                                     {{ item.id }}
-                                </button>
+                                </button> -->
 
                                 <form action="delete_customer" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="customer_id" value="{{ customer.id }}">
                                     <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+
+
+                                <form action="rest_password_in" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="customer_id" value="{{ customer.id }}">
+                                    <button type="submit" class="btn btn-success " >Rest password</button>
+
                                 </form>
 
 
@@ -217,14 +223,13 @@
                 var button = event.relatedTarget;
                 var itemId = button.getAttribute('data-id');
 
-                fetch(`/get_item_data/${itemId}/`)
+                fetch(`/view_item_data/${itemId}/`)
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('item_name').value = data.name_item;
                         document.getElementById('item_sn').value = data.item_sn;
                         document.getElementById('item_description').value = data.description;
                         document.getElementById('item_icon').src="http://127.0.0.1:8000/"+data.icon
-
 
                         
                     })

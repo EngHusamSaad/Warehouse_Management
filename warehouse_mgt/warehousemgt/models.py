@@ -17,12 +17,12 @@ class CustomerManger(models.Manager):
         if len(formdata["second_name"]) <2:
             errors['second_name']="Last Name should be at least 2 Chars"  
                             
-        if not formdata["identity"].isdigit() or len(formdata["identity"]) != 9:
-            errors['identity'] = "Wrong ID Number!"
-        else:
-            identity_number = int(formdata["identity"])
-            if identity_number < 111111111 or identity_number > 999999999:
-                errors['identity'] = "Wrong ID Number!"
+        # if not formdata["identity"].isdigit() or len(formdata["identity"]) != 9:
+        #     errors['identity'] = "Wrong ID Number!"
+        # else:
+        #     identity_number = int(formdata["identity"])
+        #     if identity_number < 111111111 or identity_number > 999999999:
+        #         errors['identity'] = "Wrong ID Number!"
             
         if not formdata["identity"].isnumeric():
             errors['identity']="Wrong ID Number should be number !"
@@ -32,7 +32,7 @@ class CustomerManger(models.Manager):
             
         
         if Customer.objects.filter(email=formdata["email"]).exists():
-            errors["email_exist"]="Email should be uniqe !"
+            errors["email"]="Email should be uniqe !"
             
         if len(formdata["notes"]) < 10:
             errors['notes']="Notes should be at least 10 Chars"
@@ -65,11 +65,11 @@ class ItemManger(models.Manager):
         if len(formdata["Item_name"]) <2:
             errors['Item_name']="Item name should be at least 2 Chars" 
                                         
-        if not formdata["Item_SN"].isdigit() or len(formdata["Item_SN"]) != 5:
+        if not formdata["Item_SN"].isdigit() or len(formdata["Item_SN"]) < 2:
             errors['Item_SN'] = "Wrong Serial Number !"
         
-        if len(formdata["description"]) < 5:
-            errors['description']="Description should be at least 5 Chars"
+        if len(formdata["description"]) < 2:
+            errors['description']="Description should be at least 2 Chars"
         return errors
         
 class Document(models.Model):
